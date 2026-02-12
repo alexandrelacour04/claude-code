@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carte des Conflits Mondiaux</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="/src/styles.css" />
+</head>
+<body>
+  <div id="app">
+    <!-- Header -->
+    <header id="header">
+      <div class="header-left">
+        <h1>Carte des Conflits Mondiaux</h1>
+        <span class="subtitle">Suivi en temps reel des conflits armes dans le monde</span>
+      </div>
+      <div class="header-right">
+        <div class="stats" id="stats"></div>
+      </div>
+    </header>
+
+    <!-- Filter bar -->
+    <div id="filter-bar">
+      <span class="filter-label">Filtrer par type :</span>
+      <div id="filter-buttons"></div>
+      <div class="intensity-filter">
+        <span class="filter-label">Intensite :</span>
+        <div id="intensity-buttons"></div>
+      </div>
+    </div>
+
+    <!-- Main content -->
+    <div id="main-content">
+      <!-- Map -->
+      <div id="map-container">
+        <div id="map"></div>
+        <div id="map-legend"></div>
+      </div>
+
+      <!-- Sidebar -->
+      <div id="sidebar" class="sidebar-closed">
+        <div id="sidebar-toggle" title="Ouvrir le panneau">
+          <span class="toggle-icon">&laquo;</span>
+        </div>
+        <div id="sidebar-content">
+          <div id="sidebar-header">
+            <h2 id="sidebar-title">Selectionnez un conflit</h2>
+            <button id="sidebar-close" title="Fermer">&times;</button>
+          </div>
+          <div id="conflict-details"></div>
+          <div id="news-feed">
+            <h3>Fil d'actualite</h3>
+            <div id="news-list"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>

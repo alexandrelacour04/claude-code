@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WeaponCraft</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- NOTIFICATION -->
+    <div id="notification-container"></div>
+
+    <!-- PROGRESS BAR -->
+    <div id="progress-container" class="hidden">
+        <div class="progress-wrapper">
+            <div class="progress-label" id="progress-label">Fabrication en cours...</div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+                <div class="progress-glow"></div>
+            </div>
+            <div class="progress-percent" id="progress-percent">0%</div>
+        </div>
+    </div>
+
+    <!-- MAIN MENU CONTAINER -->
+    <div id="menu-container" class="hidden">
+        <div class="menu-backdrop"></div>
+        <div class="menu-panel">
+            <!-- Header -->
+            <div class="menu-header">
+                <div class="header-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2l-4 6h6l-4 6"/>
+                        <circle cx="12" cy="20" r="2"/>
+                    </svg>
+                </div>
+                <h1 id="menu-title">WEAPON CRAFT</h1>
+                <button class="close-btn" onclick="closeMenu()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Tab navigation (for boss menu) -->
+            <div id="tab-nav" class="hidden">
+                <button class="tab-btn active" data-tab="employees">Employes</button>
+                <button class="tab-btn" data-tab="hire">Embaucher</button>
+                <button class="tab-btn" data-tab="prices">Prix</button>
+                <button class="tab-btn" data-tab="salaries">Salaires</button>
+                <button class="tab-btn" data-tab="treasury">Caisse</button>
+            </div>
+
+            <!-- Content area -->
+            <div class="menu-content" id="menu-content">
+                <!-- Dynamic content inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

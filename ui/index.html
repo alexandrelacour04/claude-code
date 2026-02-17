@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LSPD - Mobile Data Terminal</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div id="mdt-container" class="hidden">
+        <!-- Ecran de chargement -->
+        <div id="boot-screen" class="hidden">
+            <div class="boot-content">
+                <div class="boot-badge">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <h1>LSPD</h1>
+                <p>Mobile Data Terminal v1.0</p>
+                <div class="boot-loader">
+                    <div class="boot-loader-bar"></div>
+                </div>
+                <span class="boot-status">Connexion au systeme...</span>
+            </div>
+        </div>
+
+        <!-- Application principale -->
+        <div id="mdt-app" class="hidden">
+            <!-- Header -->
+            <header id="mdt-header">
+                <div class="header-left">
+                    <div class="header-badge">
+                        <i class="fas fa-shield-halved"></i>
+                    </div>
+                    <div class="header-info">
+                        <h1>LSPD <span class="header-divider">|</span> MDT</h1>
+                        <span class="header-subtitle">Los Santos Police Department</span>
+                    </div>
+                </div>
+                <div class="header-center">
+                    <div class="header-clock">
+                        <i class="fas fa-clock"></i>
+                        <span id="clock-time">00:00:00</span>
+                        <span class="clock-separator">|</span>
+                        <span id="clock-date">01/01/2024</span>
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="officer-info">
+                        <div class="officer-details">
+                            <span id="officer-name" class="officer-name">Chargement...</span>
+                            <span id="officer-rank" class="officer-rank">-</span>
+                        </div>
+                        <div class="officer-badge-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                    </div>
+                    <button id="btn-close-mdt" class="btn-close-mdt" title="Fermer le MDT">
+                        <i class="fas fa-power-off"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Corps principal -->
+            <div id="mdt-body">
+                <!-- Sidebar Navigation -->
+                <nav id="mdt-sidebar">
+                    <div class="nav-items">
+                        <button class="nav-item active" data-page="dashboard" title="Tableau de bord">
+                            <i class="fas fa-gauge-high"></i>
+                            <span>Tableau de bord</span>
+                        </button>
+                        <button class="nav-item" data-page="citizens" title="Recherche Citoyens">
+                            <i class="fas fa-users"></i>
+                            <span>Citoyens</span>
+                        </button>
+                        <button class="nav-item" data-page="vehicles" title="Recherche Vehicules">
+                            <i class="fas fa-car"></i>
+                            <span>Vehicules</span>
+                        </button>
+
+                        <div class="nav-separator"></div>
+
+                        <button class="nav-item" data-page="warrants" title="Mandats">
+                            <i class="fas fa-gavel"></i>
+                            <span>Mandats</span>
+                            <span class="nav-badge" id="warrant-badge" style="display:none;">0</span>
+                        </button>
+                        <button class="nav-item" data-page="bolos" title="Avis de Recherche">
+                            <i class="fas fa-bullhorn"></i>
+                            <span>BOLO</span>
+                            <span class="nav-badge" id="bolo-badge" style="display:none;">0</span>
+                        </button>
+                        <button class="nav-item" data-page="incidents" title="Rapports & Incidents">
+                            <i class="fas fa-file-lines"></i>
+                            <span>Rapports</span>
+                        </button>
+
+                        <div class="nav-separator"></div>
+
+                        <button class="nav-item" data-page="penalcode" title="Code Penal">
+                            <i class="fas fa-scale-balanced"></i>
+                            <span>Code Penal</span>
+                        </button>
+                        <button class="nav-item" data-page="dispatch" title="Dispatch">
+                            <i class="fas fa-tower-broadcast"></i>
+                            <span>Dispatch</span>
+                            <span class="nav-badge dispatch-badge" id="dispatch-badge" style="display:none;">0</span>
+                        </button>
+                        <button class="nav-item" data-page="officers" title="Officiers">
+                            <i class="fas fa-user-group"></i>
+                            <span>Officiers</span>
+                        </button>
+                    </div>
+
+                    <div class="nav-footer">
+                        <button class="nav-item" data-page="profile" title="Mon Profil">
+                            <i class="fas fa-id-card"></i>
+                            <span>Mon Profil</span>
+                        </button>
+                    </div>
+                </nav>
+
+                <!-- Contenu principal -->
+                <main id="mdt-content">
+                    <!-- Le contenu est genere dynamiquement par JavaScript -->
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notifications -->
+    <div id="toast-container"></div>
+
+    <!-- Modal overlay -->
+    <div id="modal-overlay" class="hidden">
+        <div id="modal-content"></div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>

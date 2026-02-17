@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Police MDT - LSPD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div id="mdt-container" class="mdt-hidden">
+        <!-- Header -->
+        <header class="mdt-header">
+            <div class="header-left">
+                <h1>LSPD MDT</h1>
+                <p id="header-subtitle">Mobile Data Terminal</p>
+            </div>
+            <div class="header-center">
+                <div class="officer-info">
+                    <span id="officer-name">Officier</span>
+                    <span id="officer-grade">Grade</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="close-btn" class="btn-close" title="Fermer (ESC)">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <nav class="mdt-tabs">
+            <div class="tabs-container">
+                <div id="tabs-list"></div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="mdt-content">
+            <!-- Tab: Recherche Citoyen -->
+            <div class="tab-content" id="search_citizen" data-tab="search_citizen">
+                <div class="tab-title">
+                    <h2><i class="fas fa-search"></i> Recherche Citoyen</h2>
+                </div>
+                <div class="tab-body">
+                    <form id="search-citizen-form" class="form-section">
+                        <div class="form-group">
+                            <label for="citizen-firstname">Prénom</label>
+                            <input type="text" id="citizen-firstname" placeholder="Entrer le prénom">
+                        </div>
+                        <div class="form-group">
+                            <label for="citizen-lastname">Nom</label>
+                            <input type="text" id="citizen-lastname" placeholder="Entrer le nom">
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                    </form>
+                    <div id="citizen-results" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Recherche Véhicule -->
+            <div class="tab-content" id="search_vehicle" data-tab="search_vehicle">
+                <div class="tab-title">
+                    <h2><i class="fas fa-car"></i> Recherche Véhicule</h2>
+                </div>
+                <div class="tab-body">
+                    <form id="search-vehicle-form" class="form-section">
+                        <div class="form-group">
+                            <label for="vehicle-plate">Plaque d'immatriculation</label>
+                            <input type="text" id="vehicle-plate" placeholder="Entrer la plaque (ex: ABC123)" maxlength="8">
+                        </div>
+                        <button type="submit" class="btn-primary">
+                            <i class="fas fa-search"></i> Rechercher
+                        </button>
+                    </form>
+                    <div id="vehicle-results" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Citations & Infractions -->
+            <div class="tab-content" id="citations" data-tab="citations">
+                <div class="tab-title">
+                    <h2><i class="fas fa-file-pdf"></i> Citations & Infractions</h2>
+                </div>
+                <div class="tab-body">
+                    <div class="form-section">
+                        <h3>Créer une citation</h3>
+                        <form id="citation-form">
+                            <div class="form-group">
+                                <label for="citation-citizen-id">ID Citoyen</label>
+                                <input type="number" id="citation-citizen-id" placeholder="ID">
+                            </div>
+                            <div class="form-group">
+                                <label for="citation-type">Type d'infraction</label>
+                                <select id="citation-type">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="speeding">Excès de vitesse</option>
+                                    <option value="running_red">Feu rouge</option>
+                                    <option value="reckless_driving">Conduite dangereuse</option>
+                                    <option value="no_license">Pas de permis</option>
+                                    <option value="expired_registration">Immatriculation expirée</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="citation-description">Description</label>
+                                <textarea id="citation-description" placeholder="Détails de l'infraction" rows="3"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="citation-amount">Montant ($)</label>
+                                <input type="number" id="citation-amount" placeholder="0" min="0">
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-plus"></i> Créer la citation
+                            </button>
+                        </form>
+                    </div>
+                    <div id="citations-list" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Dossiers & Rapports -->
+            <div class="tab-content" id="reports" data-tab="reports">
+                <div class="tab-title">
+                    <h2><i class="fas fa-folder"></i> Dossiers & Rapports</h2>
+                </div>
+                <div class="tab-body">
+                    <div class="form-section">
+                        <h3>Créer un rapport</h3>
+                        <form id="report-form">
+                            <div class="form-group">
+                                <label for="report-type">Type d'incident</label>
+                                <select id="report-type">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="arrest">Arrestation</option>
+                                    <option value="incident">Incident</option>
+                                    <option value="investigation">Investigation</option>
+                                    <option value="complaint">Plainte</option>
+                                    <option value="traffic_stop">Contrôle routier</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="report-location">Lieu</label>
+                                <input type="text" id="report-location" placeholder="Lieu de l'incident">
+                            </div>
+                            <div class="form-group">
+                                <label for="report-description">Description détaillée</label>
+                                <textarea id="report-description" placeholder="Détails du rapport" rows="5"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-plus"></i> Créer le rapport
+                            </button>
+                        </form>
+                    </div>
+                    <div id="reports-list" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Logs d'appels -->
+            <div class="tab-content" id="call_logs" data-tab="call_logs">
+                <div class="tab-title">
+                    <h2><i class="fas fa-phone"></i> Logs d'appels d'urgence</h2>
+                </div>
+                <div class="tab-body">
+                    <div class="form-section">
+                        <h3>Ajouter un log d'appel</h3>
+                        <form id="call-log-form">
+                            <div class="form-group">
+                                <label for="call-type">Type d'appel</label>
+                                <select id="call-type">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="robbery">Braquage</option>
+                                    <option value="assault">Agression</option>
+                                    <option value="traffic">Accident routier</option>
+                                    <option value="shooting">Fusillade</option>
+                                    <option value="theft">Vol</option>
+                                    <option value="disturbance">Tapage nocturne</option>
+                                    <option value="other">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="call-location">Localisation</label>
+                                <input type="text" id="call-location" placeholder="Lieu de l'appel">
+                            </div>
+                            <div class="form-group">
+                                <label for="call-description">Description</label>
+                                <textarea id="call-description" placeholder="Détails de l'appel" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-plus"></i> Créer le log
+                            </button>
+                        </form>
+                    </div>
+                    <div id="call-logs-list" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Avis de Recherche -->
+            <div class="tab-content" id="wanted" data-tab="wanted">
+                <div class="tab-title">
+                    <h2><i class="fas fa-exclamation-triangle"></i> Avis de Recherche</h2>
+                </div>
+                <div class="tab-body">
+                    <div class="form-section">
+                        <h3>Créer un avis de recherche</h3>
+                        <form id="wanted-form">
+                            <div class="form-group">
+                                <label for="wanted-citizen-id">ID Citoyen</label>
+                                <input type="number" id="wanted-citizen-id" placeholder="ID">
+                            </div>
+                            <div class="form-group">
+                                <label for="wanted-type">Type de mandat</label>
+                                <select id="wanted-type">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="felony">Crime grave</option>
+                                    <option value="warrant">Mandat d'arrêt</option>
+                                    <option value="missing">Personne disparue</option>
+                                    <option value="dangerous">Personne dangereuse</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="wanted-reason">Motif</label>
+                                <textarea id="wanted-reason" placeholder="Raison de la recherche" rows="3"></textarea>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-plus"></i> Émettre l'avis
+                            </button>
+                        </form>
+                    </div>
+                    <div id="wanted-list" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Agents -->
+            <div class="tab-content" id="employees" data-tab="employees">
+                <div class="tab-title">
+                    <h2><i class="fas fa-users"></i> Personnel de Police</h2>
+                </div>
+                <div class="tab-body">
+                    <div class="form-section">
+                        <h3>Gestion des agents</h3>
+                        <form id="employees-form">
+                            <div class="form-group">
+                                <label for="employee-id">ID Agent</label>
+                                <input type="number" id="employee-id" placeholder="ID">
+                            </div>
+                            <div class="form-group">
+                                <label for="employee-grade">Grade</label>
+                                <select id="employee-grade">
+                                    <option value="">-- Sélectionner --</option>
+                                    <option value="recruit">Recruit</option>
+                                    <option value="officer">Officer</option>
+                                    <option value="senior_officer">Senior Officer</option>
+                                    <option value="sergeant">Sergeant</option>
+                                    <option value="lieutenant">Lieutenant</option>
+                                    <option value="captain">Captain</option>
+                                    <option value="commander">Commander</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-check"></i> Changer le grade
+                            </button>
+                        </form>
+                    </div>
+                    <div id="employees-list" class="results-container"></div>
+                </div>
+            </div>
+
+            <!-- Tab: Statistiques -->
+            <div class="tab-content" id="statistics" data-tab="statistics">
+                <div class="tab-title">
+                    <h2><i class="fas fa-chart-bar"></i> Statistiques</h2>
+                </div>
+                <div class="tab-body">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-file-pdf"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Citations</h3>
+                                <p id="stat-citations" class="stat-number">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Avis Actifs</h3>
+                                <p id="stat-wanted" class="stat-number">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-phone"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Appels Aujourd'hui</h3>
+                                <p id="stat-calls" class="stat-number">0</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-folder"></i>
+                            </div>
+                            <div class="stat-content">
+                                <h3>Rapports</h3>
+                                <p id="stat-reports" class="stat-number">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="statistics-content" class="results-container"></div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Notifications -->
+        <div id="notification-container" class="notification-container"></div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

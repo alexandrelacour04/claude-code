@@ -3,7 +3,8 @@
    Theme sombre professionnel police
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+/* Fonts loaded from Google CDN - fallback to system fonts if unavailable */
+/* @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap'); */
 
 /* ============================================
    VARIABLES & RESET

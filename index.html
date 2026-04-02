@@ -3,59 +3,216 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Carte des Conflits Mondiaux</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <title>Blackjack - Jeu de Cartes</title>
   <link rel="stylesheet" href="/src/styles.css" />
 </head>
 <body>
-  <div id="app">
-    <!-- Header -->
-    <header id="header">
-      <div class="header-left">
-        <h1>Carte des Conflits Mondiaux</h1>
-        <span class="subtitle">Suivi en temps reel des conflits armes dans le monde</span>
+  <div id="app" class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>♠ Blackjack</h1>
+        <button id="menu-toggle" class="menu-toggle">☰</button>
       </div>
-      <div class="header-right">
-        <div class="stats" id="stats"></div>
-      </div>
-    </header>
-
-    <!-- Filter bar -->
-    <div id="filter-bar">
-      <span class="filter-label">Filtrer par type :</span>
-      <div id="filter-buttons"></div>
-      <div class="intensity-filter">
-        <span class="filter-label">Intensite :</span>
-        <div id="intensity-buttons"></div>
-      </div>
-    </div>
-
-    <!-- Main content -->
-    <div id="main-content">
-      <!-- Map -->
-      <div id="map-container">
-        <div id="map"></div>
-        <div id="map-legend"></div>
-      </div>
-
-      <!-- Sidebar -->
-      <div id="sidebar" class="sidebar-closed">
-        <div id="sidebar-toggle" title="Ouvrir le panneau">
-          <span class="toggle-icon">&laquo;</span>
+      <nav class="nav-menu">
+        <button class="nav-btn active" data-view="game">Jeu</button>
+        <button class="nav-btn" data-view="stats">Statistiques</button>
+        <button class="nav-btn" data-view="rules">Règles</button>
+        <button class="nav-btn" data-view="settings">Paramètres</button>
+      </nav>
+      <div class="sidebar-stats">
+        <div class="stat-item">
+          <span class="stat-label">Solde</span>
+          <span class="stat-value" id="balance">$1000</span>
         </div>
-        <div id="sidebar-content">
-          <div id="sidebar-header">
-            <h2 id="sidebar-title">Selectionnez un conflit</h2>
-            <button id="sidebar-close" title="Fermer">&times;</button>
-          </div>
-          <div id="conflict-details"></div>
-          <div id="news-feed">
-            <h3>Fil d'actualite</h3>
-            <div id="news-list"></div>
-          </div>
+        <div class="stat-item">
+          <span class="stat-label">Mise</span>
+          <span class="stat-value" id="bet-display">$0</span>
         </div>
       </div>
-    </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Game View -->
+      <div class="view" id="game-view">
+        <div class="game-header">
+          <h2>Table de Blackjack</h2>
+          <button id="reset-btn" class="btn btn-secondary">Nouvelle Partie</button>
+        </div>
+
+        <div class="game-table">
+          <!-- Dealer Area -->
+          <div class="dealer-area">
+            <div class="dealer-info">
+              <h3>Croupier</h3>
+              <div class="value-display" id="dealer-value">0</div>
+            </div>
+            <div class="cards-area dealer-cards" id="dealer-cards">
+              <div class="card-placeholder">Cartes du croupier</div>
+            </div>
+          </div>
+
+          <!-- Player Area -->
+          <div class="player-area">
+            <div class="player-info">
+              <h3>Votre Main</h3>
+              <div class="value-display" id="player-value">0</div>
+            </div>
+            <div class="cards-area player-cards" id="player-cards">
+              <div class="card-placeholder">Vos cartes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Game Controls -->
+        <div class="game-controls">
+          <!-- Betting Area -->
+          <div class="betting-section" id="betting-section">
+            <div class="bet-controls">
+              <button class="bet-btn" data-bet="10">10$</button>
+              <button class="bet-btn" data-bet="25">25$</button>
+              <button class="bet-btn" data-bet="50">50$</button>
+              <button class="bet-btn" data-bet="100">100$</button>
+            </div>
+            <div class="custom-bet">
+              <input type="number" id="custom-bet" placeholder="Montant personnalisé" min="1" max="1000">
+              <button id="confirm-bet" class="btn btn-primary">Miser</button>
+            </div>
+            <button id="double-bet" class="btn btn-secondary">Doubler</button>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="action-section" id="action-section" style="display: none;">
+            <button id="hit-btn" class="btn btn-primary">Prendre une Carte</button>
+            <button id="stand-btn" class="btn btn-secondary">Rester</button>
+            <button id="double-btn" class="btn btn-warning" style="display: none;">Doubler</button>
+            <button id="split-btn" class="btn btn-info" style="display: none;">Séparer</button>
+          </div>
+        </div>
+
+        <!-- Game Status -->
+        <div class="game-status" id="game-status">
+          <p id="status-message">Faites votre mise pour commencer</p>
+          <button id="next-hand-btn" class="btn btn-primary" style="display: none;">Main Suivante</button>
+        </div>
+      </div>
+
+      <!-- Stats View -->
+      <div class="view" id="stats-view" style="display: none;">
+        <div class="view-header">
+          <h2>Statistiques</h2>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <h3>Mains Jouées</h3>
+            <p id="hands-played" class="stat-number">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Victoires</h3>
+            <p id="wins" class="stat-number">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Défaites</h3>
+            <p id="losses" class="stat-number">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Égalités</h3>
+            <p id="pushes" class="stat-number">0</p>
+          </div>
+          <div class="stat-card">
+            <h3>Meilleure Main</h3>
+            <p id="best-hand" class="stat-number">BJ</p>
+          </div>
+          <div class="stat-card">
+            <h3>Gain Total</h3>
+            <p id="total-winnings" class="stat-number">$0</p>
+          </div>
+        </div>
+        <div class="stats-history">
+          <h3>Historique des Mains</h3>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </div>
+
+      <!-- Rules View -->
+      <div class="view" id="rules-view" style="display: none;">
+        <div class="view-header">
+          <h2>Règles du Blackjack</h2>
+        </div>
+        <div class="rules-content">
+          <section>
+            <h3>Objectif</h3>
+            <p>Obtenir une main avec une valeur plus proche de 21 que celle du croupier, sans dépasser 21.</p>
+          </section>
+          <section>
+            <h3>Valeurs des Cartes</h3>
+            <ul>
+              <li><strong>As (A):</strong> 1 ou 11 points</li>
+              <li><strong>Cartes Numérotées (2-10):</strong> Valeur nominale</li>
+              <li><strong>Figures (J, Q, K):</strong> 10 points</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Déroulement du Jeu</h3>
+            <ol>
+              <li>Faites votre mise</li>
+              <li>Vous et le croupier recevez 2 cartes</li>
+              <li>Vous jouez d'abord: Hit (prendre), Stand (rester), Double, Split</li>
+              <li>Le croupier joue selon ses règles</li>
+              <li>Comparaison des mains - celui avec la meilleure remporte</li>
+            </ol>
+          </section>
+          <section>
+            <h3>Actions Spéciales</h3>
+            <ul>
+              <li><strong>Hit:</strong> Prendre une autre carte</li>
+              <li><strong>Stand:</strong> Garder votre main actuelle</li>
+              <li><strong>Double:</strong> Doubler votre mise et recevoir 1 carte supplémentaire</li>
+              <li><strong>Split:</strong> Si vos 2 premières cartes ont la même valeur, séparez-les en 2 mains</li>
+            </ul>
+          </section>
+          <section>
+            <h3>Résultats</h3>
+            <ul>
+              <li><strong>Blackjack:</strong> As + 10 au départ (paie 3:2)</li>
+              <li><strong>Win:</strong> Votre main est plus proche de 21</li>
+              <li><strong>Push:</strong> Égalité avec le croupier</li>
+              <li><strong>Bust:</strong> Vous dépassez 21 et perdez</li>
+            </ul>
+          </section>
+        </div>
+      </div>
+
+      <!-- Settings View -->
+      <div class="view" id="settings-view" style="display: none;">
+        <div class="view-header">
+          <h2>Paramètres</h2>
+        </div>
+        <div class="settings-content">
+          <div class="setting-group">
+            <label for="sound-toggle" class="setting-label">
+              <input type="checkbox" id="sound-toggle" checked>
+              <span>Activer les sons</span>
+            </label>
+          </div>
+          <div class="setting-group">
+            <label for="animation-toggle" class="setting-label">
+              <input type="checkbox" id="animation-toggle" checked>
+              <span>Animations</span>
+            </label>
+          </div>
+          <div class="setting-group">
+            <label class="setting-label">Solde de Départ</label>
+            <input type="number" id="starting-balance" value="1000" min="100" step="100">
+            <button id="reset-balance-btn" class="btn btn-secondary">Réinitialiser</button>
+          </div>
+          <div class="setting-group">
+            <button id="clear-history-btn" class="btn btn-danger">Effacer l'Historique</button>
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
   <script type="module" src="/src/main.js"></script>

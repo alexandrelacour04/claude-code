@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MDT - Mobile Data Terminal</title>
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<!-- ======================================================
+     ECRAN DE CHARGEMENT
+====================================================== -->
+<div id="loading-screen">
+  <div class="loading-content">
+    <div class="badge-icon">&#9670;</div>
+    <h1>LSPD <span>MDT</span></h1>
+    <p>Mobile Data Terminal</p>
+    <div class="loading-bar"><div class="loading-fill"></div></div>
+    <small>Connexion en cours...</small>
+  </div>
+</div>
+
+<!-- ======================================================
+     APPLICATION PRINCIPALE
+====================================================== -->
+<div id="app" class="hidden">
+
+  <!-- SIDEBAR -->
+  <nav id="sidebar">
+    <div class="sidebar-header">
+      <div class="badge-logo">&#9670;</div>
+      <div>
+        <div class="dept-name">LSPD</div>
+        <div class="dept-sub">Mobile Data Terminal</div>
+      </div>
+    </div>
+
+    <div class="officer-card">
+      <div class="officer-avatar" id="nav-avatar">?</div>
+      <div class="officer-info">
+        <div class="officer-name" id="nav-name">Chargement...</div>
+        <div class="officer-rank" id="nav-rank">-</div>
+        <div class="officer-badge" id="nav-badge">Badge #-</div>
+      </div>
+    </div>
+
+    <div class="status-selector">
+      <label>Statut :</label>
+      <select id="status-select">
+        <option value="En service">En service</option>
+        <option value="En patrouille">En patrouille</option>
+        <option value="En intervention">En intervention</option>
+        <option value="Sur scene">Sur scene</option>
+        <option value="Hors service">Hors service</option>
+      </select>
+    </div>
+
+    <ul class="nav-menu">
+      <li class="nav-item active" data-page="dashboard">
+        <span class="nav-icon">&#9776;</span>
+        <span>Tableau de bord</span>
+      </li>
+      <li class="nav-item" data-page="citizens">
+        <span class="nav-icon">&#9787;</span>
+        <span>Citoyens</span>
+      </li>
+      <li class="nav-item" data-page="vehicles">
+        <span class="nav-icon">&#9654;</span>
+        <span>Vehicules</span>
+      </li>
+      <li class="nav-item" data-page="warrants">
+        <span class="nav-icon">&#9888;</span>
+        <span>Mandats</span>
+        <span class="badge-count" id="warrant-count" style="display:none">0</span>
+      </li>
+      <li class="nav-item" data-page="bolo">
+        <span class="nav-icon">&#128269;</span>
+        <span>BOLO</span>
+        <span class="badge-count" id="bolo-count" style="display:none">0</span>
+      </li>
+      <li class="nav-item" data-page="incidents">
+        <span class="nav-icon">&#128196;</span>
+        <span>Incidents</span>
+      </li>
+      <li class="nav-item" data-page="dispatch">
+        <span class="nav-icon">&#128222;</span>
+        <span>Dispatch</span>
+        <span class="badge-count blink" id="call-count" style="display:none">0</span>
+      </li>
+      <li class="nav-item" data-page="units">
+        <span class="nav-icon">&#128100;</span>
+        <span>Unites</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-footer">
+      <button id="btn-close-mdt" class="btn btn-danger btn-sm">
+        &#10006; Fermer le MDT
+      </button>
+    </div>
+  </nav>
+
+  <!-- CONTENU PRINCIPAL -->
+  <main id="main-content">
+
+    <!-- NOTIFICATIONS -->
+    <div id="notifications"></div>
+
+    <!-- ==================================================
+         PAGE : TABLEAU DE BORD
+    ================================================== -->
+    <section id="page-dashboard" class="page active">
+      <div class="page-header">
+        <h2>Tableau de bord</h2>
+        <span class="page-time" id="clock"></span>
+      </div>
+
+      <div class="dashboard-grid">
+        <div class="stat-card" id="stat-warrants">
+          <div class="stat-icon warn">&#9888;</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-warrants-val">-</div>
+            <div class="stat-label">Mandats actifs</div>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-bolo">
+          <div class="stat-icon info">&#128269;</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-bolo-val">-</div>
+            <div class="stat-label">BOLO actifs</div>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-calls">
+          <div class="stat-icon danger">&#128222;</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-calls-val">-</div>
+            <div class="stat-label">Appels en attente</div>
+          </div>
+        </div>
+        <div class="stat-card" id="stat-units">
+          <div class="stat-icon success">&#128100;</div>
+          <div class="stat-info">
+            <div class="stat-value" id="stat-units-val">-</div>
+            <div class="stat-label">Unites actives</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Derniers appels -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <h3>Derniers dispatches</h3>
+          <button class="btn btn-sm btn-primary" onclick="MDT.loadPage('dispatch')">Voir tout</button>
+        </div>
+        <div id="dashboard-calls" class="compact-list">
+          <p class="text-muted">Chargement...</p>
+        </div>
+      </div>
+
+      <!-- Mandats recents -->
+      <div class="section-card">
+        <div class="section-card-header">
+          <h3>Mandats recents</h3>
+          <button class="btn btn-sm btn-primary" onclick="MDT.loadPage('warrants')">Voir tout</button>
+        </div>
+        <div id="dashboard-warrants" class="compact-list">
+          <p class="text-muted">Chargement...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : CITOYENS
+    ================================================== -->
+    <section id="page-citizens" class="page">
+      <div class="page-header">
+        <h2>Recherche Citoyens</h2>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="citizen-search-input" placeholder="Rechercher par nom, prenom..." />
+        <button class="btn btn-primary" id="btn-search-citizen">Rechercher</button>
+      </div>
+
+      <div id="citizen-search-results">
+        <p class="text-muted text-center">Entrez un nom pour rechercher un citoyen.</p>
+      </div>
+
+      <!-- Fiche citoyen (masquee par defaut) -->
+      <div id="citizen-profile" class="hidden">
+        <div class="profile-header">
+          <button class="btn btn-sm btn-secondary" id="btn-back-search">&#8592; Retour</button>
+          <h3 id="profile-fullname">-</h3>
+          <div id="profile-wanted-badge" class="hidden"><span class="tag tag-danger blink">RECHERCHE</span></div>
+        </div>
+
+        <div class="profile-grid">
+          <div class="profile-section">
+            <h4>Informations personnelles</h4>
+            <table class="info-table">
+              <tr><td>Nom complet</td><td id="p-fullname">-</td></tr>
+              <tr><td>Date de naissance</td><td id="p-dob">-</td></tr>
+              <tr><td>Genre</td><td id="p-gender">-</td></tr>
+              <tr><td>Telephone</td><td id="p-phone">-</td></tr>
+              <tr><td>Adresse</td><td id="p-address">-</td></tr>
+              <tr><td>Nationalite</td><td id="p-nationality">-</td></tr>
+              <tr><td>Taille / Poids</td><td id="p-physique">-</td></tr>
+              <tr><td>Yeux / Cheveux</td><td id="p-appearance">-</td></tr>
+            </table>
+            <div class="profile-notes" id="p-notes-block" style="display:none">
+              <h5>Notes officier</h5>
+              <p id="p-notes">-</p>
+            </div>
+          </div>
+
+          <div class="profile-section">
+            <h4>Antecedents judiciaires</h4>
+            <div id="profile-records">
+              <p class="text-muted">Aucun antecedent.</p>
+            </div>
+
+            <div class="profile-actions">
+              <button class="btn btn-danger" id="btn-add-record">+ Ajouter un dossier</button>
+              <button class="btn btn-warning" id="btn-add-warrant">+ Emettre un mandat</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : VEHICULES
+    ================================================== -->
+    <section id="page-vehicles" class="page">
+      <div class="page-header">
+        <h2>Recherche Vehicules</h2>
+      </div>
+
+      <div class="search-bar">
+        <input type="text" id="vehicle-search-input" placeholder="Plaque d'immatriculation..." maxlength="10" />
+        <button class="btn btn-primary" id="btn-search-vehicle">Rechercher</button>
+      </div>
+
+      <div id="vehicle-result">
+        <p class="text-muted text-center">Entrez une plaque pour consulter un vehicule.</p>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : MANDATS
+    ================================================== -->
+    <section id="page-warrants" class="page">
+      <div class="page-header">
+        <h2>Mandats d'arret</h2>
+        <button class="btn btn-primary" id="btn-new-warrant-page">+ Nouveau mandat</button>
+      </div>
+      <div id="warrants-list">
+        <p class="text-muted">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : BOLO
+    ================================================== -->
+    <section id="page-bolo" class="page">
+      <div class="page-header">
+        <h2>BOLO - Be On the Look Out</h2>
+        <button class="btn btn-primary" id="btn-new-bolo">+ Emettre un BOLO</button>
+      </div>
+      <div id="bolo-list">
+        <p class="text-muted">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : INCIDENTS
+    ================================================== -->
+    <section id="page-incidents" class="page">
+      <div class="page-header">
+        <h2>Rapports d'incidents</h2>
+        <button class="btn btn-primary" id="btn-new-incident">+ Nouveau rapport</button>
+      </div>
+      <div id="incidents-list">
+        <p class="text-muted">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : DISPATCH
+    ================================================== -->
+    <section id="page-dispatch" class="page">
+      <div class="page-header">
+        <h2>Dispatch</h2>
+        <button class="btn btn-secondary" id="btn-refresh-calls">&#8635; Actualiser</button>
+      </div>
+      <div id="calls-list">
+        <p class="text-muted">Chargement...</p>
+      </div>
+    </section>
+
+    <!-- ==================================================
+         PAGE : UNITES
+    ================================================== -->
+    <section id="page-units" class="page">
+      <div class="page-header">
+        <h2>Unites actives</h2>
+        <button class="btn btn-secondary" id="btn-refresh-units">&#8635; Actualiser</button>
+      </div>
+      <div id="units-list">
+        <p class="text-muted">Chargement...</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- ======================================================
+     MODALES
+====================================================== -->
+
+<!-- Modal: Nouveau dossier judiciaire -->
+<div id="modal-record" class="modal hidden">
+  <div class="modal-box modal-lg">
+    <div class="modal-header">
+      <h3>Nouveau dossier judiciaire</h3>
+      <button class="modal-close" data-modal="modal-record">&#10006;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type de dossier</label>
+          <select id="record-type">
+            <option value="citation">Contravention</option>
+            <option value="arrest">Arrestation</option>
+            <option value="warning">Avertissement</option>
+            <option value="search">Fouille</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Lieu</label>
+          <input type="text" id="record-location" placeholder="Ex: Route de Sandy Shores..." />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Infractions</label>
+        <div id="offense-selector">
+          <div class="offense-filters">
+            <button class="offense-cat-btn active" data-cat="all">Toutes</button>
+          </div>
+          <div id="offense-list" class="offense-grid"></div>
+        </div>
+      </div>
+
+      <div id="selected-offenses" class="selected-offenses">
+        <p class="text-muted">Aucune infraction selectionnee.</p>
+      </div>
+
+      <div class="offense-totals">
+        <span>Amende totale : <strong id="total-fine">0$</strong></span>
+        <span>Prison totale : <strong id="total-jail">0 min</strong></span>
+      </div>
+
+      <div class="form-group">
+        <label>Rapport / Narrative</label>
+        <textarea id="record-narrative" rows="4" placeholder="Description des faits..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-modal="modal-record">Annuler</button>
+      <button class="btn btn-danger" id="btn-submit-record">Valider le dossier</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nouveau mandat -->
+<div id="modal-warrant" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Emettre un mandat d'arret</h3>
+      <button class="modal-close" data-modal="modal-warrant">&#10006;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Motif</label>
+        <textarea id="warrant-reason" rows="3" placeholder="Motif du mandat..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Charges retenues</label>
+        <div id="warrant-charges-list" class="offense-grid small"></div>
+      </div>
+      <div id="warrant-selected-charges" class="selected-offenses">
+        <p class="text-muted">Aucune charge selectionnee.</p>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-modal="modal-warrant">Annuler</button>
+      <button class="btn btn-danger" id="btn-submit-warrant">Emettre le mandat</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nouveau BOLO -->
+<div id="modal-bolo" class="modal hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>Emettre un BOLO</h3>
+      <button class="modal-close" data-modal="modal-bolo">&#10006;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Type</label>
+          <select id="bolo-type">
+            <option value="person">Personne</option>
+            <option value="vehicle">Vehicule</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Cible (Nom / Plaque)</label>
+          <input type="text" id="bolo-target" placeholder="Nom ou plaque..." />
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="bolo-description" rows="2" placeholder="Description physique ou du vehicule..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Raison</label>
+        <textarea id="bolo-reason" rows="2" placeholder="Raison du BOLO..."></textarea>
+      </div>
+      <div class="form-row">
+        <label class="checkbox-label">
+          <input type="checkbox" id="bolo-armed" />
+          Arme
+        </label>
+        <label class="checkbox-label">
+          <input type="checkbox" id="bolo-dangerous" />
+          Dangereux
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-modal="modal-bolo">Annuler</button>
+      <button class="btn btn-warning" id="btn-submit-bolo">Emettre le BOLO</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Nouveau rapport d'incident -->
+<div id="modal-incident" class="modal hidden">
+  <div class="modal-box modal-lg">
+    <div class="modal-header">
+      <h3>Rapport d'incident</h3>
+      <button class="modal-close" data-modal="modal-incident">&#10006;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Titre</label>
+          <input type="text" id="incident-title" placeholder="Ex: Fusillade Rockford Hills..." />
+        </div>
+        <div class="form-group">
+          <label>Type</label>
+          <select id="incident-type">
+            <option value="Incident">Incident</option>
+            <option value="Fusillade">Fusillade</option>
+            <option value="Poursuite">Poursuite</option>
+            <option value="Cambriolage">Cambriolage</option>
+            <option value="Accident">Accident</option>
+            <option value="Braquage">Braquage</option>
+            <option value="Autre">Autre</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Lieu</label>
+        <input type="text" id="incident-location" placeholder="Adresse ou lieu..." />
+      </div>
+      <div class="form-group">
+        <label>Rapport / Narrative</label>
+        <textarea id="incident-narrative" rows="5" placeholder="Description detaillee de l'incident..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" data-modal="modal-incident">Annuler</button>
+      <button class="btn btn-primary" id="btn-submit-incident">Creer le rapport</button>
+    </div>
+  </div>
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
